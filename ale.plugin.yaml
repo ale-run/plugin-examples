@@ -1,0 +1,21 @@
+name: 'plugin-examples'
+version: '0.0.0'
+displayName: Plugin Examples
+description: Ale Plugin Examples
+main: lib/index.js
+icon:
+  src: ale.svg
+  background: transparent
+  scale: 1
+  shape: square
+schema:
+  type: object
+  properties:
+    item:
+      title: Example Option
+      type: string
+      maxLength: 255
+      attrs:
+        placeholder: Example Option
+  required:
+    - item
