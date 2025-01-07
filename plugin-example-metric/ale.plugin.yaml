@@ -1,7 +1,7 @@
-name: 'plugin-examples'
+name: 'plugin-example-metric'
 version: '0.0.0'
-displayName: Plugin Examples
-description: Ale Plugin Examples
+displayName: Example - Metric
+description: Ale Plugin Examples - Metric
 main: lib/index.js
 icon:
   src: ale.svg

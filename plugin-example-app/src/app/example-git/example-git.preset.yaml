@@ -1,0 +1,14 @@
+name: example-git
+displayName: Example - Git
+apps:
+  - example-git
+categories:
+  - platform
+  - example
+config:
+  - name: example-git
+    app: example-git
+    options:
+      env:
+      - name: key
+        value: value
