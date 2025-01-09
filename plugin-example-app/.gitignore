@@ -30,4 +30,4 @@ jspm_packages
 \#*\#
 \.#*
 .projectile
-/lib
+/lib/
