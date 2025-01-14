@@ -10,7 +10,7 @@ export class ExampleMetricDriver extends ClusterMetricDriver {
   }
 
   public async getMetricItems(deployment: IDeployment): Promise<MetricItem[]> {
-    logger.info('getMetricItems', deployment.name, this.cluster.env);
+    logger.info('getMetricItems', deployment.name, this.cluster.env, deployment.stat.objects);
 
     return [
       {
@@ -94,7 +94,11 @@ export class ExampleMetricDriver extends ClusterMetricDriver {
       else if (c.getDate() < 15) limits.push(2000);
       else limits.push(4000);
 
-      c.setDate(c.getDate() + 1);
+      if (options?.unit === 'h' || options?.unit === 'm') {
+        c.setHours(c.getHours() + 1);
+      } else {
+        c.setDate(c.getDate() + 1);
+      }
     }
 
     if (name === 'cpu') {
@@ -136,15 +140,17 @@ export class ExampleMetricDriver extends ClusterMetricDriver {
           },
           {
             name: '30x',
+            options: { color: 'green' },
             values: values2
           },
           {
             name: '500',
-            // options: { color: 'red' },
+            options: { color: 'red' },
             values: values3
           },
           {
             name: '404',
+            options: { color: 'yellow' },
             values: values4
           }
         ],
