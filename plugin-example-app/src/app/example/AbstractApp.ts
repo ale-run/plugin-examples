@@ -255,6 +255,7 @@ export class AbstractApp extends AppController {
 
     const deployment = this.deployment;
     const c = new Date(options.from);
+    const interval = options.interval;
     const dates = [],
       percents = [],
       values = [];
@@ -263,14 +264,21 @@ export class AbstractApp extends AppController {
       percents.push(Math.floor(Math.random() * 100));
       values.push(Math.floor(Math.random() * 4 * 1000));
 
-      c.setDate(c.getDate() + 1);
+      const intervalNumber = +interval.substring(0, interval.length - 1) || 1;
+      if (interval.endsWith('d')) {
+        c.setDate(c.getDate() + intervalNumber);
+      } else if (interval.endsWith('h')) {
+        c.setHours(c.getHours() + intervalNumber);
+      } else if (interval.endsWith('m')) {
+        c.setMinutes(c.getMinutes() + intervalNumber);
+      } else {
+        throw new Error(`unsupported interval: ${options.interval}`);
+      }
     }
 
     if (name === 'cpu') {
       return {
         total: dates.length,
-        offset: options.offset,
-        limit: options.limit,
         dates,
         series: [
           {
@@ -282,8 +290,6 @@ export class AbstractApp extends AppController {
     } else {
       return {
         total: dates.length,
-        offset: options.offset,
-        limit: options.limit,
         dates,
         series: [
           {

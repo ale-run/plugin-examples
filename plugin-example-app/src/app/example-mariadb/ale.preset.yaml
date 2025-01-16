@@ -1,0 +1,9 @@
+name: example-mariadb
+displayName: Example MariaDB
+apps:
+  - example-mariadb
+categories:
+  - example
+config:
+  - name: example-mariadb
+    app: example-mariadb

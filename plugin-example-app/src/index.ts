@@ -11,7 +11,7 @@ export default class ExampleAppPlugin extends Plugin {
     const catalog = await this.context.getCatalog();
 
     // regist app & preset
-    const dirnames = ['example', 'example-git', 'example-metric', 'example-simple'];
+    const dirnames = ['example', 'example-git', 'example-metric', 'example-simple', 'example-mariadb'];
 
     for (const dirname of dirnames) {
       const appdir = path.join(__dirname, 'app', dirname);

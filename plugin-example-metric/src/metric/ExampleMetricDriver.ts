@@ -73,6 +73,7 @@ export class ExampleMetricDriver extends ClusterMetricDriver {
     logger.info('getMetric', deployment.name, name, options, this.cluster.env);
 
     const c = new Date(options.from);
+    const interval = options.interval;
     const dates = [],
       percents = [],
       values = [],
@@ -94,18 +95,21 @@ export class ExampleMetricDriver extends ClusterMetricDriver {
       else if (c.getDate() < 15) limits.push(2000);
       else limits.push(4000);
 
-      if (options?.unit === 'h' || options?.unit === 'm') {
-        c.setHours(c.getHours() + 1);
+      const intervalNumber = +interval.substring(0, interval.length - 1) || 1;
+      if (interval.endsWith('d')) {
+        c.setDate(c.getDate() + intervalNumber);
+      } else if (interval.endsWith('h')) {
+        c.setHours(c.getHours() + intervalNumber);
+      } else if (interval.endsWith('m')) {
+        c.setMinutes(c.getMinutes() + intervalNumber);
       } else {
-        c.setDate(c.getDate() + 1);
+        throw new Error(`unsupported interval: ${options.interval}`);
       }
     }
 
     if (name === 'cpu') {
       return {
         total: dates.length,
-        offset: options.offset,
-        limit: options.limit,
         dates,
         series: [
           {
@@ -117,8 +121,6 @@ export class ExampleMetricDriver extends ClusterMetricDriver {
     } else if (name.includes('-limit')) {
       return {
         total: dates.length,
-        offset: options.offset,
-        limit: options.limit,
         dates,
         series: [
           {
@@ -130,8 +132,6 @@ export class ExampleMetricDriver extends ClusterMetricDriver {
     } else if (name === 'http') {
       return {
         total: dates.length,
-        offset: options.offset,
-        limit: options.limit,
         dates,
         series: [
           {
@@ -164,8 +164,6 @@ export class ExampleMetricDriver extends ClusterMetricDriver {
     } else {
       return {
         total: dates.length,
-        offset: options.offset,
-        limit: options.limit,
         dates,
         series: [
           {
