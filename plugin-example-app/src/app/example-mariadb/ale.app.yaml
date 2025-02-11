@@ -4,7 +4,7 @@ description: An example app for deploying MariaDB to a cluster
 license: GPL
 author: MariaDB Foundation
 homepage: https://mariadb.org/
-main: MariaDBController.js
+main: MariaDBAppController.js
 versions:
   - '11.2'
   - '11.1'

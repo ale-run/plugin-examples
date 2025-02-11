@@ -2,7 +2,7 @@ import { ClusterAppController, Logger } from '@ale-run/runtime';
 
 const logger = Logger.getLogger('example:mariadb');
 
-export default class MariaDBController extends ClusterAppController {
+export default class MariaDBAppController extends ClusterAppController {
   public async deploy(): Promise<void> {
     logger.info('deploy started', this.deployment.getAccessName());
 

@@ -2,7 +2,7 @@ import { AppController, Logger } from '@ale-run/runtime';
 
 const logger = Logger.getLogger('app:example-simple');
 
-export default class ExampleAppWithMetric extends AppController {
+export default class ExampleAppSimple extends AppController {
   public async deploy(): Promise<void> {
     logger.debug(`deploy called`, this.deployment.name);
 
