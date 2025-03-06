@@ -1,4 +1,4 @@
-# @ale-run/plugin-ai-assistant-example
+# @ale-run/plugin-example-ai-provider
 
 
 
