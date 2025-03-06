@@ -1,5 +1,5 @@
 import { AppController, DeployedObject, SERVICE_STATUS, DeploymentStat, Logger, MetricItem, MetricData, MetricFilter, AnyObject, DeployedWorkload, DeployedIngress, DeployedVolume, DeployedDomain, DeployedExpose, sleep } from '@ale-run/runtime';
-import { Readable, PassThrough } from 'stream';
+import { Readable, Writable, PassThrough } from 'stream';
 
 const logger = Logger.getLogger('app:example');
 
@@ -212,6 +212,61 @@ export class AbstractApp extends AppController {
     }, 500);
 
     return stream;
+  }
+
+  public async attach(
+    id: string,
+    options?: AnyObject
+  ): Promise<{
+    stdin: Writable;
+    stdout: Readable;
+    stderr: Readable;
+  }> {
+    const stdin = new PassThrough();
+    const stdout = new PassThrough();
+    const stderr = new PassThrough();
+
+    function cleanInput(input: string): string {
+      // ANSI escape 시퀀스 제거 (예: "\x1b[31m", "\x1b[0K" 등)
+      let cleaned = input.replace(/\x1B\[[0-9;]*[A-Za-z]/g, '');
+      // 백스페이스(\x08) 제거
+      cleaned = cleaned.replace(/\x08/g, '');
+      // 캐리지 리턴(\r) 제거
+      cleaned = cleaned.replace(/\r/g, '');
+      return cleaned;
+    }
+
+    let commandBuffer = '';
+
+    stdin.on('data', (chunk: Buffer) => {
+      const data = chunk.toString();
+
+      // json 인 경우, 터미널 사이즈 값이니 무시 (실제 구현시에는 가상 터미널 사이즈 조정 용도로 사용)
+      if (data.includes('{') && data.includes('}')) {
+        console.log('resize', data);
+        return;
+      }
+
+      // 엔터키인 경우 지금까지 입력된 값 표시 후 다음 커맨드 입력받도록
+      if (+chunk === 0) {
+        stdout.write(`\n\rcommand is "${commandBuffer}"`);
+        stdout.write('\n\r$ ');
+      } else {
+        // 입력한 문자 터미널에 표시되도록
+        stdout.write(chunk);
+        commandBuffer += cleanInput(data);
+      }
+    });
+
+    setTimeout(async () => {
+      stdout.write('$ ');
+    }, 0);
+
+    return {
+      stdin: stdin,
+      stdout: stdout,
+      stderr: stderr
+    };
   }
 
   public async getMetricItems(): Promise<MetricItem[]> {
