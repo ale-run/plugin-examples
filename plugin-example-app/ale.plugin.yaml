@@ -1,0 +1,10 @@
+name: 'plugin-example-app'
+version: '0.0.0'
+displayName: Example - App
+description: Ale Plugin Examples - App
+main: lib/index.js
+icon:
+  src: ale.svg
+  background: transparent
+  scale: 1
+  shape: square
