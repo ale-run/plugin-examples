@@ -31,3 +31,5 @@ jspm_packages
 \.#*
 .projectile
 /lib
+package-lock.json
+.ale

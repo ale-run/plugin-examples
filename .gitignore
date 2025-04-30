@@ -30,12 +30,6 @@ jspm_packages
 \#*\#
 \.#*
 .projectile
-
-
-
-assets
-buildpath.js
-.test/
-/lib/
-/.iconcache
-/dist
+/lib
+package-lock.json
+.ale

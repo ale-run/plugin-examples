@@ -1,0 +1,9 @@
+name: example-description
+displayName: Example with Description
+apps:
+  - example-description
+categories:
+  - example
+config:
+  - name: example-description
+    app: example-description

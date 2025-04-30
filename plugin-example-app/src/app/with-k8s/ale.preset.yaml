@@ -1,0 +1,9 @@
+name: example-k8s
+displayName: Example with K8S
+apps:
+  - example-k8s
+categories:
+  - example
+config:
+  - name: example-k8s
+    app: example-k8s

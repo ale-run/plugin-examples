@@ -1,0 +1,11 @@
+name: example-simple
+displayName: Example with Simple
+apps:
+  - example-simple
+categories:
+  - example
+config:
+  - name: example-simple
+    app: example-simple
+    options:
+      key: value

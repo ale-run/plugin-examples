@@ -1,0 +1,11 @@
+name: example-metric
+displayName: Example with Metric
+apps:
+  - example-metric
+categories:
+  - example
+config:
+  - name: example-metric
+    app: example-metric
+    options:
+      key: value

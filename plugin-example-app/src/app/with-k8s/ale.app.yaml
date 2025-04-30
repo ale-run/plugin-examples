@@ -1,0 +1,25 @@
+name: example-k8s
+displayName: Example with K8S
+description: An example app for deploying with k8s
+main: ExampleAppWithK8S.js
+icon:
+  src: ale.svg
+  background: transparent
+  scale: 1
+  shape: square
+categories:
+  - deployment
+  - development
+information:
+  packager: ale.run
+schema:
+  type: object
+  properties:
+    tag:
+      title: Tag
+      type: string
+      maxLength: 255
+      attrs:
+        placeholder: Tag
+  required:
+    - tag

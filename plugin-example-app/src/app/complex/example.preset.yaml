@@ -1,0 +1,11 @@
+name: example-complex
+displayName: Example with Complex
+apps:
+  - example-complex
+categories:
+  - example
+config:
+  - name: example-complex
+    app: example-complex
+    options:
+      key: value

@@ -1,0 +1,36 @@
+name: example-git
+displayName: Example with Git
+main: ExampleWithGitApp.js
+icon:
+  src: ale.svg
+  background: transparent
+  scale: 1
+  shape: square
+categories:
+  - example-git
+schema:
+  type: object
+  properties:
+    file:
+      title: Git File
+      type: string
+      attrs:
+        placeholder: Git File
+    env:
+      title: Environment variables
+      type: array
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+          value:
+            type: string
+      additionalProperties: true
+      attrs:
+        type: env
+  required:
+    - file
+    - env
+context:
+  - git
