@@ -17,7 +17,7 @@ export default class ExampleAppWithK8S extends ClusterAppController {
     stream.write(`tag: ${tag}\n`);
 
     // load ogirinal yaml & replace tag
-    const text = fs.readFileSync(path.join(__dirname, 'descriptions', 'httpbin.yaml')).toString().split('${tag}').join(tag);
+    const text = fs.readFileSync(path.join(__dirname, 'descriptions', 'example.yaml')).toString();
     const descriptions = yaml.parseAllDocuments(text)?.map((doc) => doc.toJSON());
 
     stream.write(`descriptions:\n\n${descriptions?.map((o) => yaml.stringify(o)).join('---\n')}\n`);

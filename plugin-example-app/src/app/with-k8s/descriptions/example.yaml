@@ -1,0 +1,196 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-httpbin
+  namespace: test
+spec:
+  clusterIP: None
+  ports:
+    - name: httpbin
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: httpbin
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: deploy-httpbin
+  namespace: test
+  labels:
+    app: httpbin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpbin
+  template:
+    metadata:
+      labels:
+        app: httpbin
+    spec:
+      containers:
+        - name: httpbin
+          image: kennethreitz/httpbin
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          securityContext:
+            privileged: false
+            allowPrivilegeEscalation: false
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: ingress-httpbin
+  namespace: test
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: httpbin2.localhost
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: svc-httpbin
+                port:
+                  number: 80
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: database
+    module: mongodb
+    service: ale
+  name: mongodb
+  namespace: test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: database
+      module: mongodb
+      service: ale
+  serviceName: mongodb
+  template:
+    metadata:
+      labels:
+        app: database
+        module: mongodb
+        service: ale
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - preference:
+                matchExpressions:
+                  - key: purpose
+                    operator: In
+                    values:
+                      - system
+              weight: 1
+      containers:
+        - image: mongo:6
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            tcpSocket:
+              port: 27017
+          name: mongo
+          ports:
+            - containerPort: 27017
+              protocol: TCP
+          readinessProbe:
+            tcpSocket:
+              port: 27017
+          resources:
+            limits:
+              cpu: 2000m
+              memory: 2Gi
+            requests:
+              cpu: 20m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+          startupProbe:
+            initialDelaySeconds: 5
+            tcpSocket:
+              port: 27017
+          volumeMounts:
+            - mountPath: /data/db
+              name: data
+              subPath: data
+      terminationGracePeriodSeconds: 10
+      tolerations:
+        - effect: NoExecute
+          operator: Exists
+        - effect: NoSchedule
+          operator: Exists
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lb-mongodb
+  namespace: test
+spec:
+  type: LoadBalancer
+  ports:
+    - name: mongodb
+      port: 27017
+  selector:
+    app: database
+    module: mongodb
+    service: ale
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: test-secret
+  namespace: test
+data:
+  key: dmFsdWUK
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tls-test
+  namespace: test
+spec:
+  dnsNames:
+    - '*.ale.run'
+  issuerRef:
+    kind: ClusterIssuer
+    name: test-issuer
+  secretName: test-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: database
+    module: mongodb
+    service: ale
+  name: mongodb
+  namespace: test
+spec:
+  clusterIP: None
+  ports:
+    - name: mongodb
+      port: 27017
+  selector:
+    app: database
+    module: mongodb
+    service: ale
